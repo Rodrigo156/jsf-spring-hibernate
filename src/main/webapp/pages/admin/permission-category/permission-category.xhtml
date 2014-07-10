@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:m="http://java.sun.com/jsf/composite/component/common">
+        
+    <h:body>
+        <ui:composition template="/resources/template/BasePage.xhtml">
+            <ui:define name="metadata">
+                <f:metadata> 
+				        
+                </f:metadata>
+            </ui:define>
+            
+            <ui:define name="title">
+                    Permission category
+            </ui:define>
+
+            <ui:define name="page-name">
+                <li>Permission category</li>
+            </ui:define>
+				
+            <ui:define name="page-details-icon">
+                <i class="fa fa-bookmark"/>
+            </ui:define>
+                
+            <ui:define name="page-details">
+                <h5>List and details</h5>
+                <h1>Permission category</h1>			
+            </ui:define>
+          
+                
+            <ui:define name="content">
+                <h:form id="category-form">
+                    <h5 class="subtitle">List</h5>
+                    <p:panel id="category-lista-panel" styleClass="panel-without-border">
+                        
+                        <m:managerButtons newButtonValue="New permission category" newButtonOnComplete="PF('categoryWidget').show();" 
+                                          newButtonUpdate=":create"
+                        />
+                        
+                        <h4 class="widgettitle">Permission category</h4>
+                            <m:dataTable
+                                id="category-list"
+                                dataSet="#{authRolePermissionCategoryController.list}"
+                                columnValue="#{authRolePermissionCategoryController.columns}"
+                                editTarget="#{authRolePermissionCategoryController.category}"
+                                editUpdate=":create"
+                                editData="PF('categoryWidget').show();"
+                                deleteTarget="#{authRolePermissionCategoryController.category}"
+                                deleteAction="#{authRolePermissionCategoryController.delete()}"
+                                deleteUpdate=":category-form"
+                                deleteHeader="Delete permission category"
+                                deleteMessage="Are you sure about this?"
+                            />	
+                      </p:panel>
+                    <m:growl/>
+                    <m:confirmDialog/>
+                </h:form>
+                <ui:include src="/pages/admin/permission-category/create-category.xhtml"/>            
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

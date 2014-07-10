@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:m="http://java.sun.com/jsf/composite/component/common">
+        
+    <h:body>
+        <ui:composition template="/resources/template/BasePage.xhtml">
+            <ui:define name="metadata">
+                <f:metadata> 
+				        
+                </f:metadata>
+            </ui:define>
+            
+            <ui:define name="title">
+                    Profile
+            </ui:define>
+
+            <ui:define name="page-name">
+                <li>Profile</li>
+            </ui:define>
+				
+            <ui:define name="page-details-icon">
+                <i class="fa fa-user"/>
+            </ui:define>
+                
+            <ui:define name="page-details">
+                <h5>Edit personal data</h5>
+                <h1>Profile</h1>			
+            </ui:define>
+          
+                
+            <ui:define name="content">
+                <h:form id="users-form">
+                    
+                    <div class="maincontentinner">
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <p:panel header="Profile Photo" styleClass="panel-header">
+                                    <p:graphicImage value="/resources/template/index_files/thumb01.png"/>
+                                </p:panel>
+                            </div>
+                            <div class="span8">
+                                <p:panel header="Login Informations" styleClass="panel-header">
+                                    <h:panelGrid columns="2">
+                                        <h:outputText value="Username: "/>
+                                        <p:inputText value="#{loginController.user.userName}" readonly="true"/>
+                                        <h:outputText value="E-mail: "/>
+                                        <m:emailField id="userEmail" value="#{loginController.user.email}"/>                                      
+                                        <h:outputText value="Password"/>
+                                        <p:commandButton styleClass="button-primary" oncomplete="PF('changePasswordDialog').show();" 
+                                                         value="Change Password?" immediate="true"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                                <br/>
+                                <p:panel header="Personal Informations" styleClass="panel-header">
+                                    <h:panelGrid columns="2">
+                                        <h:outputText value="First name: "/>
+                                        <p:inputText value="#{loginController.user.firstName}" required="true" requiredMessage="Please, give your first name!"/>
+                                        <h:outputText value="Last name: "/>
+                                        <p:inputText value="#{loginController.user.lastName}" required="true" requiredMessage="Please, give your last name!"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                                <br/>
+                                <p:commandButton value="Update Profile" styleClass="button-success"
+                                                 action="#{loginController.update()}" process="users-form" update="users-form :loggedUserEmail"/>
+                            </div>
+                        </div>
+                    </div>
+                    <m:growl/>
+                </h:form>
+                <p:dialog header="Change Password" showEffect="fade" hideEffect="fade" widgetVar="changePasswordDialog" modal="true">
+                    <h:form id="password-form">
+                        <h:panelGrid columns="1">
+                            <h3 class="subtitle">Current password</h3>
+                            <p:password value="#{loginController.oldPassword}" required="true" requiredMessage="Please, enter your current password!"/>
+                            <h3 class="subtitle">New password</h3>
+                            <m:passwordMatcher value="#{loginController.newPassword}"/>
+                        </h:panelGrid>
+                        <p:commandButton value="Change Password" styleClass="button-primary"
+                                         action="#{loginController.changePassword()}" oncomplete="PF('changePasswordDialog').hide();" 
+                                         process="password-form" update=":users-form"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

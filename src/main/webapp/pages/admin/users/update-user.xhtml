@@ -1,0 +1,31 @@
+<!DOCTYPE html>  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"    
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:m="http://java.sun.com/jsf/composite/component/common">  
+
+    	<p:dialog header="Update user" widgetVar="updateUserDialog" 
+    	          dynamic="true" modal="true" showEffect="fade" hideEffect="fade">
+	    <h:form id="update" styleClass="stdform">
+                <h:panelGrid columns="1">
+                <h3 class="subtitle">E-mail</h3>
+                <m:emailField id="updateEmail" value="#{usersController.user.email}"/>
+                <h3 class="subtitle">Password</h3>
+                <m:inlinePassword value="#{usersController.user.password}"/>
+                <h3 class="subtitle">User name</h3>
+                <p:inputText id="updateName" value="#{usersController.user.userName}" />
+                <h3 class="subtitle">First name</h3>
+                <p:inputText id="updateFirstName" value="#{usersController.user.firstName}"/>
+                <h3 class="subtitle">Last name</h3>
+                <p:inputText id="updateLastName" value="#{usersController.user.lastName}"/>
+                <h:outputText value=""/>
+                <p:commandButton value="Update" action="#{usersController.saveOrUpdate()}" 
+                                    update=":users-form" 
+                                    oncomplete="PF('updateUserDialog').hide()"
+                                    styleClass="button-success"
+                                    process="update"/>
+                </h:panelGrid>
+            </h:form> 
+        </p:dialog>	 
+</html> 

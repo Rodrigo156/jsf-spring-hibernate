@@ -1,0 +1,26 @@
+<!DOCTYPE html>  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"      
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:m="http://java.sun.com/jsf/composite/component/common">  
+
+    	<p:dialog header="Update meta" widgetVar="updateMetaDialog" 
+    	          dynamic="true" modal="true" showEffect="fade" hideEffect="fade">
+	    <h:form id="update" styleClass="stdform">
+                <h:panelGrid columns="1">
+                <h3 class="subtitle">Password complexity</h3>
+                <p:inputText id="passwordComplexity" value="#{metaController.meta.passwordComplexity}"/>
+                <h3 class="subtitle">Password expiry (in days)</h3>
+                <p:inputText id="passwordExpiry" value="#{metaController.meta.passwordExpiry}" />
+                <h3 class="subtitle">Session timeout (in minutes)</h3>
+                <p:inputText id="sessionTimeout" value="#{metaController.meta.sessionTimeout}" />
+                <h:outputText value=""/>
+                <p:commandButton value="Update" action="#{metaController.saveOrUpdate()}" 
+                                    update=":meta-form" 
+                                    oncomplete="PF('updateMetaDialog').hide()"
+                                    styleClass="button-success"
+                                    process="update"/>
+                </h:panelGrid>
+            </h:form> 
+        </p:dialog>	 
+</html> 

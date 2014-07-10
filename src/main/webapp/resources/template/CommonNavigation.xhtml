@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+	    <ui:composition>
+                <li class="odd">
+                    <a class="dropdown-toggle" href="#">                   	
+                        <span class="headmenu-label"><h:link styleClass="header-link" value="Start"/></span>
+                    </a>                  
+                </li>
+                <c:if test="#{request.isUserInRole('ADMIN')}">
+                    <li>
+                        <h:form id="dropdown">
+                            <p:menuButton value="Master data" styleClass="navigationbutton">  
+                                <p:menuitem value="Users" outcome="/pages/admin/users/users.xhtml"/>
+                                <p:menuitem value="Meta" outcome="/pages/admin/meta/meta.xhtml"/>
+                                <p:menuitem value="System events" outcome="/pages/admin/system-events/system-events.xhtml"/>
+                                <p:menuitem value="Roles" outcome="/pages/admin/role/role.xhtml"/>
+                                <p:menuitem value="Permission categories" outcome="/pages/admin/permission-category/permission-category.xhtml"/>
+                                <p:menuitem value="Permissions" outcome="/pages/admin/permission/permission.xhtml"/>
+                                <p:menuitem value="Permissions and categories" outcome="/pages/admin/permission-and-category/permission-and-category.xhtml"/>
+                            </p:menuButton> 
+                        </h:form>
+                    </li>
+                </c:if>
+                <li class="right">
+                    <div class="userloggedinfo">
+                        <img src="#{request.contextPath}/resources/template/index_files/thumb01.png" alt=""/>
+                        <div class="userinfo">
+                            <h5><h:outputText value="#{loginController.username}"/><small>- <h:outputText id="loggedUserEmail" value="#{loginController.user.email}"/></small></h5>
+                            <ul>
+                                <li><h:link outcome="/pages/user/profile.xhtml" value="Edit profile"/></li>
+                                <li><h:form id="logout"><p:commandLink value="Logout" action="#{loginController.logout}" process="logout"/></h:form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+	    </ui:composition>
+    </body>
+</html>

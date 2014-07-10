@@ -1,0 +1,24 @@
+<!DOCTYPE html>  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"      
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:m="http://java.sun.com/jsf/composite/component/common">  
+
+    	<p:dialog header="Create permission" widgetVar="permissionWidget" 
+    	          dynamic="true" modal="true" showEffect="fade" hideEffect="fade">
+	    <h:form id="create" styleClass="stdform">
+                <h:panelGrid columns="1">
+                <h3 class="subtitle">Permission name</h3>
+                <p:inputText id="permissionName" value="#{authPermissionsController.permission.permissionName}" required="true" requiredMessage="Please fill the permission name!"/>
+                <h3 class="subtitle">Description</h3>
+                <p:inputTextarea id="description" value="#{authPermissionsController.permission.description}"/>
+                <br/>
+                <p:commandButton value="Save" action="#{authPermissionsController.saveOrUpdate()}" 
+                                    update=":permission-form" 
+                                    oncomplete="PF('permissionWidget').hide()"
+                                    styleClass="button-success"
+                                    process="create"/>
+                </h:panelGrid>
+            </h:form> 
+        </p:dialog>	 
+</html> 

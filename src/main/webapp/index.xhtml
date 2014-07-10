@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:m="http://java.sun.com/jsf/composite/component/common">
+
+    <f:view contentType="text/html">
+    	  <h:head>       
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+				<meta http-equiv="Pragma" content="no-cache" />
+				<meta http-equiv="Expires" content="0" />
+            </f:facet>
+            <title>Login</title>     
+            <link rel="stylesheet" href="#{request.contextPath}/resources/template/index_files/style.css" type="text/css"/>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/template/index_files/metro/metro.css"/>          
+        </h:head>
+        
+        <h:body styleClass="loginpage">
+                <div class="loginpanel">
+		    <div class="loginpanelinner">
+		        <div class="logo"><span style="font-size: 33px; color: white;">Skeleton</span></div>
+		        <h:form id="login">
+		            <div class="inputwrapper">
+		            	<p:inputText id="username" value="#{loginController.username}" required="true" requiredMessage="Please, fill the user name!"/>	 
+		            	<p:watermark for="username" value="User name" />               
+		            </div>
+		            <div class="inputwrapper">
+		            	<p:password id="password" value="#{loginController.password}" required="true" requiredMessage="Please, fill the password!"/>	
+		            	<p:watermark for="password" value="Password" />               
+		            </div>
+		            <div class="inputwrapper">
+		             	<h:outputText style="color: white" value="Remember me: &nbsp;" />
+		            	<p:selectBooleanCheckbox id="rememberMe" value="#{loginController.remember}"/>	                  
+		            </div>
+		            <div class="inputwrapper">
+                                <p:commandButton value="Login" action="#{loginController.login}" process="login"/>
+		            </div>
+                            <br/>
+                            <div class="inputwrapper">
+                                <p:commandButton value="Register" oncomplete="PF('userWidget').show();"
+                                                 styleClass="button-success" update=":createUser:createDialog"/>
+		            </div>
+		            <m:growl/>
+		        </h:form>
+                        <m:userRegistration id="createUser" email="#{registrationController.data.email}" firstName="#{registrationController.data.firstName}" 
+                                             userName="#{registrationController.data.username}"
+                                             lastName="#{registrationController.data.lastName}" 
+                                             password="#{registrationController.data.password}" 
+                                             registerAction="#{registrationController.register()}" update=":login"/>
+		    </div>
+		</div>
+		
+		<div class="loginfooter">
+		    <p>© 2014. Skeleton environment.</p>
+		</div>
+        </h:body>
+    </f:view>
+</html>

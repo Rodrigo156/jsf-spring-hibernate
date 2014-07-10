@@ -1,0 +1,31 @@
+<!DOCTYPE html>  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"      
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:m="http://java.sun.com/jsf/composite/component/common"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">  
+
+    	<p:dialog header="Create meta" widgetVar="metaWidget" 
+    	          dynamic="true" modal="true" showEffect="fade" hideEffect="fade">
+	    <h:form id="create" styleClass="stdform">
+                <h:panelGrid columns="1">
+                <h3 class="subtitle">Password complexity</h3>
+                <p:inputText id="passwordComplexity" value="#{metaController.meta.passwordComplexity}"/>
+                <h3 class="subtitle">Password expiry (in days)</h3>
+                <p:inputText id="passwordExpiry" value="#{metaController.meta.passwordExpiry}" validatorMessage="Value must be between 30 and 180!">
+                    <f:validateLongRange minimum="30" maximum="180"/>
+                </p:inputText>
+                <h3 class="subtitle">Session timeout (in minutes)</h3>
+                <p:inputText id="sessionTimeout" value="#{metaController.meta.sessionTimeout}" validatorMessage="Value must be between 1 and 10!">
+                    <f:validateLongRange minimum="1" maximum="10"/>
+                </p:inputText>
+                <h:outputText value=""/>
+                <p:commandButton value="Save" action="#{metaController.saveOrUpdate()}" 
+                                    update=":meta-form" 
+                                    oncomplete="PF('metaWidget').hide()"
+                                    styleClass="button-success"
+                                    process="create"/>
+                </h:panelGrid>
+            </h:form> 
+        </p:dialog>	 
+</html> 

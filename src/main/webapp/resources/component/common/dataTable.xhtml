@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:p="http://primefaces.org/ui">
+ 
+	<composite:interface>
+            <composite:attribute name="id" />
+            <composite:attribute name="dataSet" />
+            <composite:attribute name="columnValue" />
+            <composite:attribute name="editData" required="false"/>
+            <composite:attribute name="editUpdate" />
+            <composite:attribute name="editTarget" />
+            <composite:attribute name="rows" required="false" default="10"/>
+            <composite:attribute name="editButtonLabel" required="false" default="Edit"/>
+            <composite:attribute name="deleteAction" method-signature="java.lang.String action()" required="false"/>
+            <composite:attribute name="deleteUpdate" required="false"/>
+            <composite:attribute name="deleteTarget" required="false"/>
+            <composite:attribute name="deleteHeader" required="false"/>
+            <composite:attribute name="deleteMessage" required="false"/>
+            <composite:attribute name="deleteButtonRendered" required="false" default="true"/>
+	</composite:interface>
+ 
+	<composite:implementation>
+            <p:dataTable id="#{cc.attrs.id}" value="#{cc.attrs.dataSet}" var="object" emptyMessage="No available data"
+                         paginator="true" paginatorAlwaysVisible="false" rows="#{cc.attrs.rows}" rowsPerPageTemplate="5,10,15"
+		             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                <p:columns id="data-table-columns" var="column" value="#{cc.attrs.columnValue}" 
+                           sortBy="#{object[column.property]}">
+                    <f:facet name="header">
+                            #{column.header}
+                    </f:facet>
+                    <h:outputText value="#{object[column.property]}"/>
+                </p:columns>
+                <p:column style="width:15%">
+                    <h:panelGrid columns="2" styleClass="myGrid">
+                        <p:commandButton styleClass="button-primary" icon="ui-icon-search" title="#{cc.attrs.editButtonLabel}" oncomplete="#{cc.attrs.editData}" update="#{cc.attrs.editUpdate}" >
+                                    <f:setPropertyActionListener target="#{cc.attrs.editTarget}" value="#{object}"/>
+                            </p:commandButton>
+                        <p:commandButton styleClass="button-cancel" rendered="#{cc.attrs.deleteButtonRendered}" icon="ui-icon-trash" title="Delete" action="#{cc.attrs.deleteAction}" update="#{cc.attrs.deleteUpdate}" process="#{cc.attrs.id}">
+                                    <f:setPropertyActionListener target="#{cc.attrs.deleteTarget}" value="#{object}"/>
+                                    <p:confirm header="#{cc.attrs.deleteHeader}" message="#{cc.attrs.deleteMessage}" icon="ui-icon-alert" />
+                            </p:commandButton>
+                    </h:panelGrid>
+                </p:column>
+        </p:dataTable>
+ 
+	</composite:implementation>
+ 
+</html>

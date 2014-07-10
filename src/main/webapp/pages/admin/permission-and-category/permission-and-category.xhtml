@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:m="http://java.sun.com/jsf/composite/component/common">
+        
+    <h:body>
+        <ui:composition template="/resources/template/BasePage.xhtml">
+            <ui:define name="metadata">
+               <f:metadata> 
+                          
+                </f:metadata>
+            </ui:define>
+            
+            <ui:define name="title">
+                Permissions and categories
+            </ui:define>
+
+            <ui:define name="page-name">
+                <li>Permissions and categories</li>
+            </ui:define>
+				
+            <ui:define name="page-details-icon">
+                <i class="fa fa-check-square"/>
+            </ui:define>
+                
+            <ui:define name="page-details">
+                <h5>Add permissions to categories</h5>
+                <h1>Permissions and categories</h1>			
+            </ui:define>        
+                
+            <ui:define name="content">
+                <h5 class="subtitle">Permission categories</h5>
+                <h:form id="category-form">              
+                    <p:panel id="permissions-category-panel" styleClass="panel-without-border">
+                        <f:facet name="actions">
+                            <h:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"><h:outputText styleClass="ui-icon ui-icon-help" /></h:commandLink>
+                        </f:facet>
+                        <ui:repeat var="category" value="#{addToCategoryController.categoryList}">
+                            <p:panel header="#{category.categoryName}" styleClass="panel-header">
+                                <f:facet name="actions">
+                                    <p:commandButton value="Add permission" 
+                                                     styleClass="ui-panel-titlebar-icon ui-corner-all button-success" 
+                                                     oncomplete="PF('permissionsWidget').show()" update=":available-permissions">
+                                        
+                                        <f:setPropertyActionListener target="#{addToCategoryController.permissionCategory}" value="#{category}"/>
+                                    </p:commandButton>                               
+                                </f:facet>  
+                            </p:panel>
+                            <br/>
+                        </ui:repeat>    
+                    </p:panel>
+                    <m:growl/>
+                    <m:confirmDialog/>
+                </h:form>
+                <p:dialog header="Available permissions" hideEffect="fade" modal="true" widgetVar="permissionsWidget">
+                    <h:form id="available-permissions">
+                        <p:dataTable value="#{addToCategoryController.permissionCategory.permissions}" var="p">
+                            <p:column headerText="P">
+                                <h:outputText value="#{p.permissionName}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <br/>
+                        <p:commandButton value="Add" styleClass="button-success" process="available-permissions" update=":category-form"
+                                         action="#{addToCategoryController.addToCategory()}" oncomplete="PF('permissionsWidget').hide()"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

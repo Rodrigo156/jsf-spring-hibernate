@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:composite="http://java.sun.com/jsf/composite"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:m="http://java.sun.com/jsf/composite/component/common">
+
+    <composite:interface>
+        <composite:attribute name="email" />
+        <composite:attribute name="password" />
+        <composite:attribute name="userName"/>
+        <composite:attribute name="lastName" />
+        <composite:attribute name="firstName" />
+        <composite:attribute name="registerAction" method-signature="java.lang.String action()" />
+        <composite:attribute name="update" />
+    </composite:interface>
+
+    <composite:implementation>
+        <p:dialog header="Registration" widgetVar="userWidget" dynamic="true" id="createDialog">  
+            <h:form id="create" styleClass="stdform">
+                <h:panelGrid columns="1">
+                        <h3 class="subtitle">Login details</h3>
+                        <m:emailField id="newEmail" value="#{cc.attrs.email}"/>
+                        <p:watermark value="E-mail" for=":createUser:create:newEmail:newEmail"/>
+                        <m:passwordMatcher value="#{cc.attrs.password}"/>
+                        <h3 class="subtitle">User details</h3>
+                        <p:inputText id="newName" value="#{cc.attrs.userName}" />
+                        <p:watermark value="User name" for="newName"/>
+                        <p:inputText id="newFirstName" value="#{cc.attrs.firstName}"/>
+                        <p:watermark value="First name" for="newFirstName"/>
+                        <p:inputText id="newLastName" value="#{cc.attrs.lastName}"/>
+                        <p:watermark value="Last name" for="newLastName"/>
+                        <p:commandButton value="Register" action="#{cc.attrs.registerAction}" 
+                                            update="#{cc.attrs.update}" 
+                                            oncomplete="PF('userWidget').hide()"
+                                            styleClass="button-success"
+                                            process="create"/>
+                </h:panelGrid>
+            </h:form>                              			        
+        </p:dialog>
+    </composite:implementation>
+ 
+</html>

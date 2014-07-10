@@ -1,0 +1,22 @@
+<!DOCTYPE html>  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"      
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:m="http://java.sun.com/jsf/composite/component/common"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">  
+
+    	<p:dialog header="Create permission category" widgetVar="categoryWidget" 
+    	          dynamic="true" modal="true" showEffect="fade" hideEffect="fade">
+	    <h:form id="create" styleClass="stdform">
+                <h:panelGrid columns="1">
+                <h3 class="subtitle">Permission category name</h3>
+                <p:inputText id="categoryName" value="#{authRolePermissionCategoryController.category.categoryName}" required="true" requiredMessage="Please fill the category name!"/>              
+                <p:commandButton value="Save" action="#{authRolePermissionCategoryController.saveOrUpdate()}" 
+                                    update=":category-form" 
+                                    oncomplete="PF('categoryWidget').hide()"
+                                    styleClass="button-success"
+                                    process="create"/>
+                </h:panelGrid>
+            </h:form> 
+        </p:dialog>	 
+</html> 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:composite="http://java.sun.com/jsf/composite"
+    xmlns:p="http://primefaces.org/ui">
+
+    <composite:interface>
+            <composite:attribute name="newButtonValue" />
+            <composite:attribute name="newButtonOnComplete" />
+            <composite:attribute name="newButtonUpdate" />
+    </composite:interface>
+
+    <composite:implementation>
+
+            <div class="mediamgr_head">
+                    <ul class="mediamgr_menu">
+                            <li>
+                                    <p:commandButton
+                                            value="#{cc.attrs.newButtonValue}"
+                                            oncomplete="#{cc.attrs.newButtonOnComplete}"
+                                            update="#{cc.attrs.newButtonUpdate}" styleClass="button-success"/>
+                            </li>
+                    </ul>
+                    <span class="clearall"></span>
+            </div>
+
+    </composite:implementation>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:m="http://java.sun.com/jsf/composite/component/common">
+        
+    <h:body>
+        <ui:composition template="/resources/template/BasePage.xhtml">
+            <ui:define name="metadata">
+                <f:metadata> 
+				        
+                </f:metadata>
+            </ui:define>
+            
+            <ui:define name="title">
+                    Users
+            </ui:define>
+
+            <ui:define name="page-name">
+                <li>Users</li>
+            </ui:define>
+				
+            <ui:define name="page-details-icon">
+                <i class="fa fa-group"/>
+            </ui:define>
+                
+            <ui:define name="page-details">
+                <h5>List and details</h5>
+                <h1>Users</h1>			
+            </ui:define>
+          
+                
+            <ui:define name="content">
+                <h:form id="users-form">
+                    <h5 class="subtitle">List</h5>
+                    <p:panel id="users-lista-panel" styleClass="panel-without-border">
+                        
+                        <m:managerButtons newButtonValue="New user" newButtonOnComplete="PF('userWidget').show();" 
+                                         newButtonUpdate=":createUser:createDialog"
+                        />
+                        
+                        <h4 class="widgettitle">List of users</h4>
+                            <m:dataTable
+                                id="users-list"
+                                dataSet="#{usersController.users}"
+                                columnValue="#{usersController.columns}"
+                                editTarget="#{usersController.user}"
+                                editUpdate=":update"
+                                editData="PF('updateUserDialog').show();"
+                                deleteTarget="#{usersController.user}"
+                                deleteAction="#{usersController.delete()}"
+                                deleteUpdate="users-list"
+                                deleteHeader="Delete user"
+                                deleteMessage="Are you sure about this?"
+                            />	
+                      </p:panel>
+                    <m:growl/>
+                    <m:confirmDialog/>
+                </h:form>
+                <ui:include src="/pages/admin/users/update-user.xhtml"/>
+                <m:userRegistration id="createUser" email="#{usersController.user.email}" firstName="#{usersController.user.firstName}" 
+                                    userName="#{usersController.user.userName}"
+                                    lastName="#{usersController.user.lastName}" 
+                                    password="#{usersController.user.password}" 
+                                    registerAction="#{usersController.register()}" update=":users-form"/>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

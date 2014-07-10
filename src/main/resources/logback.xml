@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="db" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource
+            class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            <driverClass>com.mysql.jdbc.Driver</driverClass>
+            <url>jdbc:mysql://localhost:3306/jsf_example</url>
+            <user>root</user>
+        </connectionSource>
+        <sqlDialect class="ch.qos.logback.core.db.dialect.MySQLDialect"/>
+        <layout>
+            <Pattern>%X{username} - %m%n</Pattern>
+        </layout>
+    </appender>
+    
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %5p | %t | %-55logger{55} | %m %n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- the level of the root level is set to DEBUG by default. -->
+    <root level="ERROR">
+        <appender-ref ref="db" />
+        <appender-ref ref="console"/>
+    </root>
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"      
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:m="http://java.sun.com/jsf/composite/component/common">  
+
+    	<p:dialog header="Create role" widgetVar="roleWidget" 
+    	          dynamic="true" modal="true" showEffect="fade" hideEffect="fade">
+	    <h:form id="create" styleClass="stdform">
+                <h:panelGrid columns="1">
+                <h3 class="subtitle">Role name</h3>
+                <p:inputText id="roleName" value="#{authRolesController.role.roleName}"/>               
+                <p:commandButton value="Save" action="#{authRolesController.saveOrUpdate()}" 
+                                    update=":role-form" 
+                                    oncomplete="PF('roleWidget').hide()"
+                                    styleClass="button-success"
+                                    process="create"/>
+                </h:panelGrid>
+            </h:form> 
+        </p:dialog>	 
+</html> 
