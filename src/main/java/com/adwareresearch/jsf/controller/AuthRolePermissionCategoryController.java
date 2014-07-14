@@ -11,15 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+
+import org.primefaces.event.CloseEvent;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
-@Component(value="addToCategoryController")
+@Component
 @SpringViewScoped
 public class AuthRolePermissionCategoryController implements Serializable{
     
-    @Autowired
-    private AuthRolePermissionCategoryService permissionCategoryService;
+	private static final long serialVersionUID = -2538030228581347654L;
+	
+	@Autowired
+    private transient AuthRolePermissionCategoryService permissionCategoryService;
     private List<AuthRolePermissionCategory> list;
     private List<ColumnModel> columns;
     private AuthRolePermissionCategory category;
@@ -40,29 +46,31 @@ public class AuthRolePermissionCategoryController implements Serializable{
     }
     
     public void saveOrUpdate() {
-       // if(
-        		permissionCategoryService.save(getCategory());
-        		//) {
+       try { 
+        	permissionCategoryService.save(getCategory());
             JsfMessageUtil.addSuccessMessage("Permission category saved!");
             setList(permissionCategoryService.list());
             setCategory(new AuthRolePermissionCategory());
-//        } else {
-//            JsfMessageUtil.addErrorMessage("Error while saving permission category!");
-//            LoggerFactory.getLogger(AuthRolePermissionCategoryController.class).error("Error while saving permission category!");
-//        }
+       } catch(DataAccessException ex) {
+            JsfMessageUtil.addErrorMessage("Error while saving permission category!");
+            LoggerFactory.getLogger(AuthRolePermissionCategoryController.class).error("Error while saving permission category!");
+        }
     }
     
     public void delete() {
-        //if(
-        		permissionCategoryService.delete(getCategory());
-        		//) {
+        try {
+        	permissionCategoryService.delete(getCategory());
             JsfMessageUtil.addSuccessMessage("Permission category deleted!");
             setList(permissionCategoryService.list());
             setCategory(new AuthRolePermissionCategory());
-//        } else {
-//            JsfMessageUtil.addErrorMessage("Error while deleting permission category!");
-//            LoggerFactory.getLogger(AuthRolePermissionCategoryController.class).error("Error while deleting permission category!");
-//        }
+        } catch(DataAccessException ex) {
+            JsfMessageUtil.addErrorMessage("Error while deleting permission category!");
+            LoggerFactory.getLogger(AuthRolePermissionCategoryController.class).error("Error while deleting permission category!");
+        }
+    }
+    
+    public void handleClose(CloseEvent event) {  
+    	setCategory(new AuthRolePermissionCategory());
     }
     
     public List<AuthRolePermissionCategory> getList() {

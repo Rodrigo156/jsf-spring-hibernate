@@ -5,7 +5,9 @@
     xmlns:m="http://java.sun.com/jsf/composite/component/common">  
 
     	<p:dialog header="Update role" widgetVar="updateRoleDialog" 
-    	          dynamic="true" modal="true" showEffect="fade" hideEffect="fade">
+    	          dynamic="true" modal="true" showEffect="fade" 
+    	          hideEffect="fade">
+    	<p:ajax event="close" listener="#{authRolesController.handleClose}"/>
 	    <h:form id="update" styleClass="stdform">
                 <h:panelGrid columns="1">
                 <h3 class="subtitle">Role name</h3>

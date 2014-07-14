@@ -1,33 +1,35 @@
 package com.adwareresearch.domain;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name="auth_roles",catalog="jsf_example", uniqueConstraints = @UniqueConstraint(columnNames="role_name"))
-public class AuthRoles  implements Serializable {
+public class AuthRoles  implements Serializable, GrantedAuthority {
 
-     private Integer id;
-     private String roleName;
-     private Set<AuthUserRoles> authUserRoleses = new HashSet<>(0);
-     private Set<AuthRolePermission> authRolePermissions = new HashSet<>(0);
+	private static final long serialVersionUID = 4765403305475261730L;
+	
+	private Integer id;
+    private String roleName;
+    private Set<AuthUserRoles> authUserRoleses = new HashSet<>(0);
+    private Set<AuthRolePermission> authRolePermissions = new HashSet<>(0);
 
     public AuthRoles() {}
 
@@ -70,7 +72,7 @@ public class AuthRoles  implements Serializable {
         this.authUserRoleses = authUserRoleses;
     }
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="authRoles", targetEntity = AuthRolePermission.class)
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="authRoles", targetEntity = AuthRolePermission.class)
     @Cascade(CascadeType.ALL)
     public Set<AuthRolePermission> getAuthRolePermissions() {
         return this.authRolePermissions;
@@ -104,5 +106,11 @@ public class AuthRoles  implements Serializable {
 		} else if (!roleName.equals(other.roleName))
 			return false;
 		return true;
+	}
+
+	@Override
+	@Transient
+	public String getAuthority() {
+		return getRoleName();
 	}
 }

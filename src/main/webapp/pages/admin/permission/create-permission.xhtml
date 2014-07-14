@@ -6,6 +6,7 @@
 
     	<p:dialog header="Create permission" widgetVar="permissionWidget" 
     	          dynamic="true" modal="true" showEffect="fade" hideEffect="fade">
+    	          <p:ajax event="close" listener="#{authPermissionsController.handleClose}"/>
 	    <h:form id="create" styleClass="stdform">
                 <h:panelGrid columns="1">
                 <h3 class="subtitle">Permission name</h3>

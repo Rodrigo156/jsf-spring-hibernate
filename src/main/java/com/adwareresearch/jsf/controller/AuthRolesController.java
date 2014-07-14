@@ -12,15 +12,20 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.primefaces.event.CloseEvent;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 @Component
 @SpringViewScoped
 public class AuthRolesController implements Serializable {
     
-    @Autowired
-    private AuthRolesService authRolesService;
+	private static final long serialVersionUID = -6348094345993371230L;
+	
+	@Autowired
+    private transient AuthRolesService authRolesService;
     private List<AuthRoles> list;
     private AuthRoles role;
     private List<ColumnModel> columns;
@@ -42,29 +47,31 @@ public class AuthRolesController implements Serializable {
     }
     
     public void saveOrUpdate() {
-        //if(
-        		authRolesService.save(getRole());
-        	//	) {
+        try {
+        	authRolesService.save(getRole());
             JsfMessageUtil.addSuccessMessage("Role saved!");
             setList(authRolesService.list());
             setRole(new AuthRoles());
-//        } else {
-//            JsfMessageUtil.addErrorMessage("Error while saving role!");
-//            LoggerFactory.getLogger(AuthRolesController.class).error("Error while saving roles!");
-//        }
+        } catch(DataAccessException ex) {
+            JsfMessageUtil.addErrorMessage("Error while saving role!");
+            LoggerFactory.getLogger(AuthRolesController.class).error("Error while saving roles!");
+        }
     }
     
     public void delete() {
-       // if(
-        		authRolesService.delete(getRole());
-        		//) {
+       try {
+    	   authRolesService.delete(getRole());
            JsfMessageUtil.addSuccessMessage("Role deleted!");
            setList(authRolesService.list());
            setRole(new AuthRoles()); 
-//        } else {
-//            JsfMessageUtil.addErrorMessage("Error while deleting role!");
-//            LoggerFactory.getLogger(AuthRolesController.class).error("Error while deleting roles!");
-//        }
+        } catch(DataAccessException ex) {
+            JsfMessageUtil.addErrorMessage("Error while deleting role!");
+            LoggerFactory.getLogger(AuthRolesController.class).error("Error while deleting roles!");
+        }
+    }
+    
+    public void handleClose(CloseEvent event) {  
+    	setRole(new AuthRoles());
     }
 
     public List<AuthRoles> getList() {

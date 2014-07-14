@@ -9,17 +9,22 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @SpringRequestScoped
 public class RegistrationController implements Serializable{
 
+	private static final long serialVersionUID = 5767271156078289525L;
+	
+	@Autowired
+    private transient AuthUserService service;
     @Autowired
-    private AuthUserService service;
-    @Autowired
-    private SystemProperties properties;
+    private transient SystemProperties properties;
     
     private AuthUser data;
     
@@ -31,16 +36,16 @@ public class RegistrationController implements Serializable{
         if(service.findByUsername(getData().getUserName()).isEmpty()) {
             getData().setPasswordExpiry(getPasswordExpiry());
             //getData().getAuthUserRoleses().add(Role.EMPLOYEE);
-            //getData().setPassword(PasswordGenerator.getEncryptedPassword(getData().getPassword()));
-            //if(
+            getData().setPassword(new BCryptPasswordEncoder().encode(getData().getPassword()));
+            try {
             	service.save(getData());
             	//) {
                 JsfMessageUtil.addSuccessMessage("Registration successful");
                 setData(new AuthUser());
-//            } else {
-//                LoggerFactory.getLogger(RegistrationController.class).error("Registration error", getData().getUserName());
-//                JsfMessageUtil.addErrorMessage("Registration error");
-//            }
+            } catch(DataAccessException ex) {
+                LoggerFactory.getLogger(RegistrationController.class).error("Registration error", getData().getUserName());
+                JsfMessageUtil.addErrorMessage("Registration error");
+            }
         } else {
             JsfMessageUtil.addErrorMessage("This username is taken!");
         }

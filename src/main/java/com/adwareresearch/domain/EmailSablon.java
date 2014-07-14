@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 public class EmailSablon implements Serializable {
 
-    private String receiver;
+	private static final long serialVersionUID = -4704734571247022659L;
+	
+	private String receiver;
     private String sender;
     private String subject;
     private String body;

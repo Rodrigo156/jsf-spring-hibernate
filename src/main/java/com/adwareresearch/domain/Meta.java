@@ -1,14 +1,12 @@
 package com.adwareresearch.domain;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -16,7 +14,9 @@ import javax.persistence.Table;
 @Table(name="meta",catalog="jsf_example")
 public class Meta implements Serializable {
     
-    private int id;
+	private static final long serialVersionUID = 3248161765374451535L;
+	
+	private int id;
     private String passwordComplexity;
     private int passwordExpiry;
     private int sessionTimeout;

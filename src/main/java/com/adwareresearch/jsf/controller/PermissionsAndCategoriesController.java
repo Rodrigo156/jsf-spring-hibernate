@@ -16,14 +16,16 @@ import com.adwareresearch.jsf.converter.AuthPermissionsConverter;
 import com.adwareresearch.service.AuthPermissionsService;
 import com.adwareresearch.service.AuthRolePermissionCategoryService;
 
-@Component
+@Component(value="addToCategoryController")
 @SpringViewScoped
 public class PermissionsAndCategoriesController implements Serializable {
     
+	private static final long serialVersionUID = 7252856832742020741L;
+	
+	@Autowired
+    private transient AuthRolePermissionCategoryService categoryService;
     @Autowired
-    private AuthRolePermissionCategoryService categoryService;
-    @Autowired
-    private AuthPermissionsService permissionCategoryService;
+    private transient AuthPermissionsService permissionCategoryService;
     private List<AuthPermissions> permissionList;
     private List<AuthRolePermissionCategory> categoryList;
     private List<AuthPermissions> selectedPermissions;
@@ -32,7 +34,6 @@ public class PermissionsAndCategoriesController implements Serializable {
 
     @PostConstruct
     public void init() {
-        System.out.println("POST CONST");
         this.categoryList = categoryService.list();
         this.permissionList = permissionCategoryService.findAvailablePermissions();
         this.permissionConverter = new AuthPermissionsConverter(this.permissionList);

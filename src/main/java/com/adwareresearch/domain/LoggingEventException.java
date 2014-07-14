@@ -21,7 +21,9 @@ import javax.persistence.Table;
 @Table(name="logging_event_exception",catalog="jsf_example")
 public class LoggingEventException implements Serializable {
     
-    private int eventId;
+	private static final long serialVersionUID = 1831893196237939214L;
+	
+	private int eventId;
     private int i;
     private String traceLine;
     private int id;

@@ -22,7 +22,9 @@ import org.hibernate.annotations.CascadeType;
 @Table(name="auth_role_permissions_category",catalog="jsf_example")
 public class AuthRolePermissionCategory implements Serializable {
 	
-    private int id;
+	private static final long serialVersionUID = -4284320863318261102L;
+	
+	private int id;
     private String categoryName;
     private Set<AuthPermissions> permissions = new HashSet<>(0);
 

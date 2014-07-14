@@ -14,11 +14,16 @@ import org.springframework.stereotype.Component;
 @SpringApplicationScoped
 public class SystemProperties implements Serializable {
     
-    @Autowired
-    private MetaService metaService;
-    private String passwordComplexity;
-    private int passwordExpiry;
-    private int sessionTimeout;
+	private static final long serialVersionUID = 8259010516031036203L;
+	
+	@Autowired
+    private transient MetaService metaService;
+    @SuppressWarnings("unused")
+	private String passwordComplexity;
+    @SuppressWarnings("unused")
+	private int passwordExpiry;
+    @SuppressWarnings("unused")
+	private int sessionTimeout;
 
     public String getPasswordComplexity() {
         List<Meta> list = metaService.list();

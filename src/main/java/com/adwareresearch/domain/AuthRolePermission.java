@@ -16,6 +16,8 @@ import javax.persistence.Table;
 @Table(name="auth_role_permission",catalog="jsf_example")
 public class AuthRolePermission  implements Serializable {
 	
+	private static final long serialVersionUID = 4242387867736697321L;
+	
 	private Integer id;
     private AuthRoles authRoles;
     private AuthPermissions authPermissions;
@@ -38,7 +40,7 @@ public class AuthRolePermission  implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="auth_roles_id", nullable=false)
     public AuthRoles getAuthRoles() {
         return this.authRoles;

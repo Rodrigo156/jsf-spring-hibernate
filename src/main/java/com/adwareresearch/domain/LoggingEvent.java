@@ -12,7 +12,9 @@ import javax.persistence.Table;
 @Table(name="logging_event",catalog="jsf_example")
 public class LoggingEvent implements Serializable {
 	
-    private int eventId;
+	private static final long serialVersionUID = -617840406006287801L;
+	
+	private int eventId;
     private String timeStamp;
     private String formattedMessage;
     private String loggerName;

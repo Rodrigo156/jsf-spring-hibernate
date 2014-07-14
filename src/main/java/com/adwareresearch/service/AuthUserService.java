@@ -1,9 +1,12 @@
 package com.adwareresearch.service;
 
 import com.adwareresearch.domain.AuthUser;
+
 import java.util.List;
 
-public interface AuthUserService {
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+public interface AuthUserService extends UserDetailsService {
     public void save(AuthUser user);
     public void delete(AuthUser user);
     public List<AuthUser> list();

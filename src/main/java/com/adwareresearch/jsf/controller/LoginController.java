@@ -2,104 +2,107 @@ package com.adwareresearch.jsf.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.adwareresearch.domain.AuthUser;
 import com.adwareresearch.jsf.annotation.SpringSessionScoped;
+import com.adwareresearch.jsf.util.JsfMessageUtil;
 import com.adwareresearch.service.AuthUserService;
 
 @Component
 @SpringSessionScoped
 public class LoginController implements Serializable {
-    
+
+	private static final long serialVersionUID = 6805510621201619373L;
+	
+	@Autowired
+    private transient AuthUserService service;
     @Autowired
-    private AuthUserService service;
+    private transient AuthenticationManager authenticationManager;
+    @Autowired
+    private SystemProperties properties;
     
-    //Username field on login form (for Shiro)
+    //Username field on login form (for Spring Security)
     private String username;
-    //Password field on login form (for Shiro)
+    //Password field on login form (for Spring Security)
     private String password;
     //Old user password (for changing password)
     private String oldPassword;
     //New user password (compare with old user password)
     private String newPassword;
-    //Remember me field on login form (for Shiro)
-    private boolean remember;
     //Logged in user
     private AuthUser user;
     
     public String login() {
-    	List<AuthUser> u =  service.findByUsername(username);
-    	if(!u.isEmpty()) {
-    		  setUser(u.get(0));
-    		  return "/pages/main.xhtml?faces-redirect=true";
-    	} else {
-    		return null;
+    	try {
+    		Authentication request = new UsernamePasswordAuthenticationToken(getUsername(), getPassword());
+    		Authentication result = authenticationManager.authenticate(request);
+    		setUser((AuthUser) result.getPrincipal());
+    		SecurityContextHolder.getContext().setAuthentication(result);
+    		return "/pages/main.xhtml?faces-redirect=true";
+    	} catch(LockedException ex) {
+    		JsfMessageUtil.addErrorMessage("User is locked!");
+    		LoggerFactory.getLogger(LoginController.class).error("User is locked!", ex); 
+    	} catch(BadCredentialsException ex) {
+    		JsfMessageUtil.addErrorMessage("Wrong login details!");
+    		LoggerFactory.getLogger(LoginController.class).error("Wrong login details!", ex); 
+    	} catch(AuthenticationException ex) {
+    		JsfMessageUtil.addErrorMessage("Authentication error!");
+    		LoggerFactory.getLogger(LoginController.class).error("Authentication error!", ex); 
     	}
-//        try {
-//            
-//            Subject currentUser = SecurityUtils.getSubject();
-//            AuthenticationToken token = new UsernamePasswordToken(username, password,  remember);         
-//            currentUser.login(token);                
-//            setUser(service.findByUsername(username).get(0));
-//
-//            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-//	    SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(request);
-//	    return savedRequest != null ? savedRequest.getRequestUrl().replace(request.getContextPath(), "")+"?faces-redirect=true" : "/pages/main.xhtml?faces-redirect=true";
-//
-//        } catch (UnknownAccountException | IndexOutOfBoundsException ex ) {            
-//            LoggerFactory.getLogger(LoginController.class).error("Unknow account!", username, ex);
-//            JsfMessageUtil.addErrorMessage("Unknow account!");
-//        } catch (IncorrectCredentialsException ex ) {
-//            LoggerFactory.getLogger(LoginController.class).error("Incorrect credentials!", username, ex);
-//            JsfMessageUtil.addErrorMessage("Incorrect credentials!");
-//        } catch (LockedAccountException ex ) {
-//            LoggerFactory.getLogger(LoginController.class).error("Locked account!", username, ex);
-//            JsfMessageUtil.addErrorMessage("Locked account!");
-//        } catch(AuthenticationException ex){
-//            LoggerFactory.getLogger(LoginController.class).error("Authentication exception!", username, ex);
-//            JsfMessageUtil.addErrorMessage("Authentication exception!");
-//        }
-//        return null;
+    	return null;   	
     }
     
     public void update() {
-//        if(service.save(getUser())) {
-//            JsfMessageUtil.addSuccessMessage("Profile updated");
-//        } else {
-//            JsfMessageUtil.addErrorMessage("Update profile error");
-//            LoggerFactory.getLogger(LoginController.class).error("Update profile error", username);        
-//        }
+    	try {
+    		service.save(getUser());
+    		JsfMessageUtil.addSuccessMessage("Profile updated");
+    	} catch(DataAccessException ex) {
+    		JsfMessageUtil.addErrorMessage("Update profile error");
+            LoggerFactory.getLogger(LoginController.class).error("Update profile error", username);   
+    	}
     }
     
-//    private boolean checkPassword(String oldPassword) {
-//        return PasswordGenerator.checkMatching(oldPassword, getUser().getPassword());
-//    }
+    private boolean checkPassword(String oldPassword) {
+    	return new BCryptPasswordEncoder().matches(oldPassword, getUser().getPassword());
+    }
     
     public void changePassword() {
-//        if(!checkPassword(getOldPassword())) {
-//            JsfMessageUtil.addErrorMessage("Wrong current password!");
-//        } else {
-//            getUser().setPassword(PasswordGenerator.getEncryptedPassword(getNewPassword()));
-//            if(service.save(getUser())) {
-//                setOldPassword("");
-//                JsfMessageUtil.addSuccessMessage("Password changed");
-//            } else {
-//                JsfMessageUtil.addErrorMessage("Update password error!");
-//                LoggerFactory.getLogger(LoginController.class).error("Update password error!", username); 
-//            }
-//        }
+        if(!checkPassword(getOldPassword())) {
+            JsfMessageUtil.addErrorMessage("Wrong current password!");
+        } else {      	
+        	try {
+        		getUser().setPassword(new BCryptPasswordEncoder().encode(getNewPassword()));
+        		getUser().setPasswordExpiry(getPasswordExpiry());
+        		service.save(getUser());
+        		setOldPassword("");
+        		JsfMessageUtil.addSuccessMessage("Password changed");
+        	} catch(DataAccessException ex) {
+        		JsfMessageUtil.addErrorMessage("Update password error!");
+                LoggerFactory.getLogger(LoginController.class).error("Update password error!", username); 
+        	}    
+        }
     }
     
     public void logout() {
-        //SecurityUtils.getSubject().logout();
+        SecurityContextHolder.clearContext();
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         ec.invalidateSession();
         try {
@@ -107,6 +110,12 @@ public class LoginController implements Serializable {
         } catch (IOException ex) {
             LoggerFactory.getLogger(LoginController.class).error("Logout error!", username, ex); 
         }
+    }
+    
+    public Date getPasswordExpiry() {
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DAY_OF_MONTH, properties.getPasswordExpiry());
+        return new Date(now.getTimeInMillis());
     }
     
     public boolean isAuthenticated() {
@@ -127,14 +136,6 @@ public class LoginController implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isRemember() {
-        return remember;
-    }
-
-    public void setRemember(boolean remember) {
-        this.remember = remember;
     }
 
     public AuthUser getUser() {

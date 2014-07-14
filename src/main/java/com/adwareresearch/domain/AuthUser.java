@@ -1,18 +1,17 @@
 package com.adwareresearch.domain;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
@@ -20,7 +19,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "findByUsernameAndPassword", 
@@ -36,18 +41,20 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name="auth_user",catalog="jsf_example", uniqueConstraints = @UniqueConstraint(columnNames="user_name"))
-public class AuthUser  implements Serializable {
+public class AuthUser  implements Serializable, UserDetails {
 
-     private Integer id;
-     private String userName;
-     private String password;
-     private String firstName;
-     private String lastName;
-     private String email;
-     private Date passwordExpiry;
-     private Byte userLocked;
-     private Byte userActive;
-     private Set<AuthUserRoles> authUserRoleses = new HashSet<>(0);
+	private static final long serialVersionUID = -1601610711044471932L;
+	
+	private Integer id;
+    private String userName;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private Date passwordExpiry;
+    private boolean userLocked;
+    private boolean userActive;
+    private Set<AuthUserRoles> authUserRoleses = new HashSet<>(0);
 
     public AuthUser() {}
 
@@ -57,7 +64,7 @@ public class AuthUser  implements Serializable {
         this.passwordExpiry = passwordExpiry;
     }
     
-    public AuthUser(String userName, String password, String firstName, String lastName, String email, Date passwordExpiry, Byte userLocked, Byte userActive, Set<AuthUserRoles> authUserRoleses) {
+    public AuthUser(String userName, String password, String firstName, String lastName, String email, Date passwordExpiry, boolean userLocked, boolean userActive, Set<AuthUserRoles> authUserRoleses) {
        this.userName = userName;
        this.password = password;
        this.firstName = firstName;
@@ -135,24 +142,25 @@ public class AuthUser  implements Serializable {
     }
 
     @Column(name="user_locked")
-    public Byte getUserLocked() {
+    public boolean getUserLocked() {
         return this.userLocked;
     }
     
-    public void setUserLocked(Byte userLocked) {
+    public void setUserLocked(boolean userLocked) {
         this.userLocked = userLocked;
     }
 
     @Column(name="user_active")
-    public Byte getUserActive() {
+    public boolean getUserActive() {
         return this.userActive;
     }
     
-    public void setUserActive(Byte userActive) {
+    public void setUserActive(boolean userActive) {
         this.userActive = userActive;
     }
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="authUser", targetEntity = AuthUserRoles.class)
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="authUser", targetEntity = AuthUserRoles.class)
+    @Cascade(value = {CascadeType.ALL})
     public Set<AuthUserRoles> getAuthUserRoleses() {
         return this.authUserRoleses;
     }
@@ -185,5 +193,64 @@ public class AuthUser  implements Serializable {
 		} else if (!userName.equals(other.userName))
 			return false;
 		return true;
+	}
+	
+	@Transient
+    public Set<AuthPermissions> getPermissions() {
+		Set<AuthPermissions> permissions = new HashSet<>();
+		for(AuthRoles authRoles : getRoles()) {
+			for(AuthRolePermission authRolePermissions : authRoles.getAuthRolePermissions()) {
+				permissions.add(authRolePermissions.getAuthPermissions());
+			}
+		}
+        return permissions;
+    }
+	
+	@Transient
+	public Set<AuthRoles> getRoles() {
+		Set<AuthRoles> roles = new HashSet<>();
+		for(AuthUserRoles authRoles : getAuthUserRoleses()) {
+        	roles.add(authRoles.getAuthRoles());
+        }
+		return roles;
+	}
+
+	@Override
+	@Transient
+	public Collection<GrantedAuthority> getAuthorities() {
+		Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.addAll(getRoles());
+        authorities.addAll(getPermissions());
+        return authorities;
+	}
+
+	@Override
+	@Transient
+	public String getUsername() {
+		return getUserName();
+	}
+
+	@Override
+	@Transient
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	@Transient
+	public boolean isAccountNonLocked() {
+		return !getUserLocked();
+	}
+
+	@Override
+	@Transient
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	@Transient
+	public boolean isEnabled() {
+		return getUserActive();
 	}
 }

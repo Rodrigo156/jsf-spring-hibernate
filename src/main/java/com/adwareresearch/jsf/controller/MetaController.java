@@ -12,15 +12,19 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 @Component
 @SpringViewScoped
 public class MetaController implements Serializable {
     
-    @Autowired
-    private MetaService metaService;
+	private static final long serialVersionUID = 6685307289004273738L;
+	
+	@Autowired
+    private transient MetaService metaService;
     private List<Meta> metaList;
     private List<ColumnModel> columns;
     private Meta meta;
@@ -44,29 +48,27 @@ public class MetaController implements Serializable {
     }
     
     public void saveOrUpdate() {
-        //if(
-        		metaService.save(getMeta());
-        		//) {
+        try{
+        	metaService.save(getMeta());
             JsfMessageUtil.addSuccessMessage("Meta saved!");
             setMetaList(metaService.list());
             setMeta(new Meta());
-//        } else {
-//            JsfMessageUtil.addErrorMessage("Error while saving meta!");
-//            LoggerFactory.getLogger(MetaController.class).error("Error while saving meta!");
-//        }
+        } catch(DataAccessException ex) {
+            JsfMessageUtil.addErrorMessage("Error while saving meta!");
+            LoggerFactory.getLogger(MetaController.class).error("Error while saving meta!");
+        }
     }
     
     public void delete() {
-        //if(
-        		metaService.delete(getMeta());
-        		//) {
+        try {
+        	metaService.delete(getMeta());
             JsfMessageUtil.addSuccessMessage("Meta deleted!");
             setMetaList(metaService.list());
             setMeta(new Meta());
-//        } else {
-//            JsfMessageUtil.addErrorMessage("Error while deleting meta!");
-//            LoggerFactory.getLogger(MetaController.class).error("Error while deleting meta!");
-//        }
+        } catch(DataAccessException ex) {
+            JsfMessageUtil.addErrorMessage("Error while deleting meta!");
+            LoggerFactory.getLogger(MetaController.class).error("Error while deleting meta!");
+        }
     }
 
     public List<Meta> getMetaList() {

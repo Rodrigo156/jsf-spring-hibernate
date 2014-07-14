@@ -20,14 +20,17 @@ import org.springframework.stereotype.Component;
 @SpringViewScoped
 public class LoggingEventsController implements Serializable {
 	
+	private static final long serialVersionUID = 2199258236136789421L;
+	
+	@Autowired
+    private transient LoggingEventsService eventsService;
     @Autowired
-    private LoggingEventsService eventsService;
-    @Autowired
-    private LoggingEventsExceptionService eventsExceptionService;
+    private transient LoggingEventsExceptionService eventsExceptionService;
     private List<LoggingEvent> list;
     private LoggingEvent event;
     private List<ColumnModel> columns;
-    private String exception;
+    @SuppressWarnings("unused")
+	private String exception;
     
     @PostConstruct
     public void init() {     

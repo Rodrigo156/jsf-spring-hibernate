@@ -34,10 +34,6 @@
 		            	<p:watermark for="password" value="Password" />               
 		            </div>
 		            <div class="inputwrapper">
-		             	<h:outputText style="color: white" value="Remember me: &nbsp;" />
-		            	<p:selectBooleanCheckbox id="rememberMe" value="#{loginController.remember}"/>	                  
-		            </div>
-		            <div class="inputwrapper">
                                 <p:commandButton value="Login" action="#{loginController.login}" process="login"/>
 		            </div>
                             <br/>
@@ -47,11 +43,14 @@
 		            </div>
 		            <m:growl/>
 		        </h:form>
-                        <m:userRegistration id="createUser" email="#{registrationController.data.email}" firstName="#{registrationController.data.firstName}" 
-                                             userName="#{registrationController.data.username}"
-                                             lastName="#{registrationController.data.lastName}" 
-                                             password="#{registrationController.data.password}" 
-                                             registerAction="#{registrationController.register()}" update=":login"/>
+                <m:userRegistration id="createUser" 
+                					email="#{registrationController.data.email}" 
+                					firstName="#{registrationController.data.firstName}" 
+                                    userName="#{registrationController.data.username}"
+                                    lastName="#{registrationController.data.lastName}" 
+                                    password="#{registrationController.data.password}" 
+                                    registerAction="#{registrationController.register()}" 
+                                    update=":login"/>
 		    </div>
 		</div>
 		

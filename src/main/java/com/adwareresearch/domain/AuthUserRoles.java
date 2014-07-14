@@ -1,21 +1,29 @@
 package com.adwareresearch.domain;
 
 import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 @Entity
 @Table(name="auth_user_roles",catalog="jsf_example")
 public class AuthUserRoles  implements java.io.Serializable {
 
-    private Integer id;
+	private static final long serialVersionUID = 8980490483930916917L;
+	
+	private Integer id;
     private AuthRoles authRoles;
     private AuthUser authUser;
 
@@ -37,8 +45,9 @@ public class AuthUserRoles  implements java.io.Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="auth_roles_id", nullable=false)
+    @Cascade(value = {CascadeType.ALL})
     public AuthRoles getAuthRoles() {
         return this.authRoles;
     }
