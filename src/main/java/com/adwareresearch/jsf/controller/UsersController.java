@@ -35,7 +35,6 @@ public class UsersController implements Serializable {
     private List<AuthUser> users;
     private List<ColumnModel> columns;
     private AuthUser user;
-    private String password;
 
     public UsersController() {
         this.columns = new ArrayList<>();
@@ -57,8 +56,8 @@ public class UsersController implements Serializable {
     }
     
     public void saveOrUpdate() {
-       if(!getPassword().isEmpty() && !new BCryptPasswordEncoder().matches(getPassword(), getUser().getPassword())) {
-           getUser().setPassword(new BCryptPasswordEncoder().encode(getPassword()));
+       if(!getUser().getPassword().isEmpty()) {
+           getUser().setPassword(new BCryptPasswordEncoder().encode(getUser().getPassword()));
            getUser().setPasswordExpiry(getPasswordExpiry());
        }
         
@@ -77,6 +76,7 @@ public class UsersController implements Serializable {
         //getUser().getAuthUserRoleses().add(Role.EMPLOYEE);
         getUser().setPassword(new BCryptPasswordEncoder().encode(getUser().getPassword()));
         getUser().setPasswordExpiry(getPasswordExpiry());
+        getUser().setUserActive(true);
         try {
         	userDataService.save(getUser());
             JsfMessageUtil.addSuccessMessage("User saved");
@@ -132,13 +132,5 @@ public class UsersController implements Serializable {
 
     public void setColumns(List<ColumnModel> columns) {
         this.columns = columns;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

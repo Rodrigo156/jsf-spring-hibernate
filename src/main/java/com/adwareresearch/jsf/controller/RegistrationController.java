@@ -33,6 +33,7 @@ public class RegistrationController implements Serializable{
     }
 
     public void register() {
+    	getData().setUserActive(true);
         if(service.findByUsername(getData().getUserName()).isEmpty()) {
             getData().setPasswordExpiry(getPasswordExpiry());
             //getData().getAuthUserRoleses().add(Role.EMPLOYEE);
