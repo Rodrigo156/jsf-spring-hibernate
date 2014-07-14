@@ -1507,3 +1507,20 @@ a.breadcrumb-inactive {
 .blue-bold {
     color: #0866C6;
 }
+
+.roleChooser.ui-selectmanymenu.ui-inputfield.ui-widget.ui-widget-content.ui-corner-all {
+    border: medium none;
+}
+
+.roleChooser.ui-state-hover,
+.roleChooser.ui-widget-content .ui-state-hover,
+.roleChooser.ui-widget-header .ui-state-hover,
+.roleChooser.ui-state-focus,
+.roleChooser.ui-widget-content .ui-state-focus,
+.roleChooser.ui-widget-header .ui-state-focus {
+	/*border: 1px solid #999999;*/
+	background: none;
+	font-weight: normal;
+	color: #212121;
+	box-shadow: none;
+}

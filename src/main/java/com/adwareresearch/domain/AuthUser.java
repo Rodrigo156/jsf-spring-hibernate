@@ -54,7 +54,7 @@ public class AuthUser  implements Serializable, UserDetails {
     private Date passwordExpiry;
     private boolean userLocked;
     private boolean userActive;
-    private Set<AuthUserRoles> authUserRoleses = new HashSet<>(0);
+    private Set<AuthUserRoles> authUserRoleses = new HashSet<>();
 
     public AuthUser() {}
 

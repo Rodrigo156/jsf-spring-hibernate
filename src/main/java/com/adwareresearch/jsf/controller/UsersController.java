@@ -15,10 +15,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.adwareresearch.domain.AuthRoles;
 import com.adwareresearch.domain.AuthUser;
+import com.adwareresearch.domain.AuthUserRoles;
 import com.adwareresearch.jsf.annotation.SpringViewScoped;
+import com.adwareresearch.jsf.converter.AuthRolesConverter;
 import com.adwareresearch.jsf.util.ColumnModel;
 import com.adwareresearch.jsf.util.JsfMessageUtil;
+import com.adwareresearch.service.AuthRolesService;
 import com.adwareresearch.service.AuthUserService;
 
 @Component
@@ -31,9 +35,15 @@ public class UsersController implements Serializable {
     private transient AuthUserService userDataService;
     @Autowired
     private transient SystemProperties properties;
+    @Autowired
+    private transient AuthRolesService authRolesService;
     
     private List<AuthUser> users;
+    private List<AuthRoles> roles;
+    private List<AuthRoles> selectedUserRoles;
+    private List<AuthRoles> selectedRoles;
     private List<ColumnModel> columns;
+    private transient AuthRolesConverter rolesConverter;
     private AuthUser user;
 
     public UsersController() {
@@ -44,6 +54,8 @@ public class UsersController implements Serializable {
     @PostConstruct
     public void init() {
         this.users = userDataService.list();
+        this.roles = authRolesService.list();
+        this.rolesConverter = new AuthRolesConverter(this.roles);
         createDynamicColumns();
     }
     
@@ -73,7 +85,14 @@ public class UsersController implements Serializable {
     }
     
     public void register() {
-        //getUser().getAuthUserRoleses().add(Role.EMPLOYEE);
+    	List<AuthUserRoles> roles = new ArrayList<>();
+    	for(AuthRoles role : selectedRoles) {    	
+    		AuthUserRoles authUserRoles = new AuthUserRoles();
+    		authUserRoles.setAuthRoles(role);
+    		authUserRoles.setAuthUser(getUser());
+    		roles.add(authUserRoles);
+    	}
+    	getUser().getAuthUserRoleses().addAll(roles);
         getUser().setPassword(new BCryptPasswordEncoder().encode(getUser().getPassword()));
         getUser().setPasswordExpiry(getPasswordExpiry());
         getUser().setUserActive(true);
@@ -133,4 +152,36 @@ public class UsersController implements Serializable {
     public void setColumns(List<ColumnModel> columns) {
         this.columns = columns;
     }
+
+	public List<AuthRoles> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<AuthRoles> roles) {
+		this.roles = roles;
+	}
+
+	public AuthRolesConverter getRolesConverter() {
+		return rolesConverter;
+	}
+
+	public void setRolesConverter(AuthRolesConverter rolesConverter) {
+		this.rolesConverter = rolesConverter;
+	}
+
+	public List<AuthRoles> getSelectedRoles() {
+		return selectedRoles;
+	}
+
+	public void setSelectedRoles(List<AuthRoles> selectedRoles) {
+		this.selectedRoles = selectedRoles;
+	}
+
+	public List<AuthRoles> getSelectedUserRoles() {
+		return selectedUserRoles;
+	}
+
+	public void setSelectedUserRoles(List<AuthRoles> selectedUserRoles) {
+		this.selectedUserRoles = selectedUserRoles;
+	}
 }

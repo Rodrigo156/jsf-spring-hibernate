@@ -14,6 +14,15 @@
                 <h3 class="subtitle">E-mail</h3>
                 <m:emailField id="updateEmail" value="#{usersController.user.email}"/>
                 <h3 class="subtitle">Password</h3>
+                <h3 class="subtitle">Permissions</h3>
+                <p:selectManyMenu id="roleChooser" value="#{usersController.selectedUserRoles}" converter="#{usersController.rolesConverter}" styleClass="roleChooser"
+                          var="r" filter="true" filterMatchMode="contains" showCheckbox="true" required="true" requiredMessage="Please choose at least one Role!">
+		            <f:selectItems value="#{usersController.roles}" var="data" itemLabel="#{data.roleName}" itemValue="#{data}" />	  
+		            <p:column>
+		                <h:outputText value="#{r.roleName}" />
+		            </p:column>
+		        </p:selectManyMenu>
+                
                 <m:inlinePassword value="#{usersController.user.password}"/>
                 <h3 class="subtitle">User name</h3>
                 <p:inputText id="updateName" value="#{usersController.user.userName}" />
@@ -21,6 +30,10 @@
                 <p:inputText id="updateFirstName" value="#{usersController.user.firstName}"/>
                 <h3 class="subtitle">Last name</h3>
                 <p:inputText id="updateLastName" value="#{usersController.user.lastName}"/>
+                <h3 class="subtitle">User active</h3>
+                <p:selectBooleanCheckbox value="#{usersController.user.userActive}"/>
+                <h3 class="subtitle">User locked</h3>
+                <p:selectBooleanCheckbox value="#{usersController.user.userLocked}"/>
                 <h:outputText value=""/>
                 <p:commandButton value="Update" action="#{usersController.saveOrUpdate()}" 
                                     update=":users-form" 

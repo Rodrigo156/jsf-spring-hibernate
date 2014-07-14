@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -20,6 +22,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.security.core.GrantedAuthority;
 
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "findByRoleName", 
+					  query = "select * from auth_roles r where r.role_name = :roleName",
+					  resultClass = AuthRoles.class)			  
+})
+
 @Entity
 @Table(name="auth_roles",catalog="jsf_example", uniqueConstraints = @UniqueConstraint(columnNames="role_name"))
 public class AuthRoles  implements Serializable, GrantedAuthority {
@@ -28,8 +36,8 @@ public class AuthRoles  implements Serializable, GrantedAuthority {
 	
 	private Integer id;
     private String roleName;
-    private Set<AuthUserRoles> authUserRoleses = new HashSet<>(0);
-    private Set<AuthRolePermission> authRolePermissions = new HashSet<>(0);
+    private Set<AuthUserRoles> authUserRoleses = new HashSet<>();
+    private Set<AuthRolePermission> authRolePermissions = new HashSet<>();
 
     public AuthRoles() {}
 
@@ -112,5 +120,10 @@ public class AuthRoles  implements Serializable, GrantedAuthority {
 	@Transient
 	public String getAuthority() {
 		return getRoleName();
+	}
+
+	@Override
+	public String toString() {
+		return roleName;
 	}
 }

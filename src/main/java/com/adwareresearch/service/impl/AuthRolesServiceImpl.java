@@ -31,5 +31,10 @@ public class AuthRolesServiceImpl implements AuthRolesService {
     public List<AuthRoles> list() {
         return dao.list();
     }
+
+	@Override
+	public List<AuthRoles> findByRoleName(String roleName) {
+		return dao.findByRoleName(roleName);
+	}
     
 }

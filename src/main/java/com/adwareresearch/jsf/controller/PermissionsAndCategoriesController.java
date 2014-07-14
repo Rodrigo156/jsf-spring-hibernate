@@ -30,7 +30,7 @@ public class PermissionsAndCategoriesController implements Serializable {
     private List<AuthRolePermissionCategory> categoryList;
     private List<AuthPermissions> selectedPermissions;
     private AuthRolePermissionCategory permissionCategory;
-    private AuthPermissionsConverter permissionConverter;
+    private transient AuthPermissionsConverter permissionConverter;
 
     @PostConstruct
     public void init() {

@@ -7,4 +7,5 @@ public interface AuthRolesService {
     public void save(AuthRoles role);
     public void delete(AuthRoles role);
     public List<AuthRoles> list();
+    public List<AuthRoles> findByRoleName(String roleName);
 }

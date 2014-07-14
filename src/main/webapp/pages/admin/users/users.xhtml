@@ -68,6 +68,8 @@
                                     password="#{usersController.user.password}" 
                                     registerAction="#{usersController.register()}" 
                                     update=":users-form"
+                                    isRoleChooserEnabled="true" roleConverter="#{usersController.rolesConverter}"
+                                    roleDataSet="#{usersController.roles}" selectedRoles="#{usersController.selectedRoles}"
                                     />
             </ui:define>
         </ui:composition>

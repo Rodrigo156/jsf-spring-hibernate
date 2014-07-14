@@ -1,13 +1,17 @@
 package com.adwareresearch.jsf.controller;
 
+import com.adwareresearch.domain.AuthRoles;
 import com.adwareresearch.domain.AuthUser;
+import com.adwareresearch.domain.AuthUserRoles;
 import com.adwareresearch.jsf.annotation.SpringRequestScoped;
 import com.adwareresearch.jsf.util.JsfMessageUtil;
+import com.adwareresearch.service.AuthRolesService;
 import com.adwareresearch.service.AuthUserService;
 
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +29,8 @@ public class RegistrationController implements Serializable{
     private transient AuthUserService service;
     @Autowired
     private transient SystemProperties properties;
-    
+    @Autowired
+    private transient AuthRolesService authRolesService;
     private AuthUser data;
     
     public RegistrationController() {
@@ -33,14 +38,19 @@ public class RegistrationController implements Serializable{
     }
 
     public void register() {
+    	List<AuthRoles> role = authRolesService.findByRoleName("EMPLOYEE");
+    	if(!role.isEmpty()) {
+    		AuthUserRoles authUserRoles = new AuthUserRoles();
+    		authUserRoles.setAuthRoles(role.get(0));
+    		authUserRoles.setAuthUser(getData());
+    		getData().getAuthUserRoleses().add(authUserRoles);
+    	}
     	getData().setUserActive(true);
         if(service.findByUsername(getData().getUserName()).isEmpty()) {
             getData().setPasswordExpiry(getPasswordExpiry());
-            //getData().getAuthUserRoleses().add(Role.EMPLOYEE);
             getData().setPassword(new BCryptPasswordEncoder().encode(getData().getPassword()));
             try {
             	service.save(getData());
-            	//) {
                 JsfMessageUtil.addSuccessMessage("Registration successful");
                 setData(new AuthUser());
             } catch(DataAccessException ex) {

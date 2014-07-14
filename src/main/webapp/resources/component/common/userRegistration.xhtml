@@ -6,7 +6,8 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:composite="http://java.sun.com/jsf/composite"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:m="http://java.sun.com/jsf/composite/component/common">
+    xmlns:m="http://java.sun.com/jsf/composite/component/common"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <composite:interface>
         <composite:attribute name="email" />
@@ -16,6 +17,10 @@
         <composite:attribute name="firstName" />
         <composite:attribute name="registerAction" method-signature="java.lang.String action()" />
         <composite:attribute name="update" />
+        <composite:attribute name="isRoleChooserEnabled" default="false"/>
+        <composite:attribute name="roleDataSet" required="false"/>
+        <composite:attribute name="selectedRoles" required="false"/>
+        <composite:attribute name="roleConverter" required="false"/>
     </composite:interface>
 
     <composite:implementation>
@@ -26,6 +31,11 @@
                         <m:emailField id="newEmail" value="#{cc.attrs.email}"/>
                         <p:watermark value="E-mail" for=":createUser:create:newEmail:newEmail"/>
                         <m:passwordMatcher value="#{cc.attrs.password}"/>
+                        <c:if test="#{cc.attrs.isRoleChooserEnabled}">
+                        	<m:roleChooser value="#{cc.attrs.selectedRoles}" 
+                                       converter="#{cc.attrs.roleConverter}" 
+                                       dataSet="#{cc.attrs.roleDataSet}"/>
+                        </c:if>
                         <h3 class="subtitle">User details</h3>
                         <p:inputText id="newName" value="#{cc.attrs.userName}" />
                         <p:watermark value="User name" for="newName"/>
